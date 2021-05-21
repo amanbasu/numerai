@@ -82,6 +82,7 @@ def get_prediction(model):
                 neut = pd.concat([neut, df_])
             preds = pd.concat([preds, neut])
 
+            # don't make complete predictions in test mode
             if test:
                 break
             
@@ -112,6 +113,7 @@ def make_submission(num=1):
     predictions.to_csv("predictions.csv", index=False)
     napi = numerapi.NumerAPI(public_id=keys['public_id'], secret_key=keys['secret_key'])
     
+    # do not submit in test mode
     if test:
         logging('NUMERAI-INFO: test successful')
         return
@@ -124,9 +126,7 @@ if __name__ == "__main__":
     test = False
     
     try:
-        # skip model 1 to save time
-        if not test:
-            make_submission(num=1)
+        make_submission(num=1)
     except Exception as e:
         traceback_str = ''.join(traceback.format_tb(e.__traceback__))
         logging(traceback_str)
